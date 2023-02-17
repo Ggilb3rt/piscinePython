@@ -2,6 +2,8 @@ import sys
 
 
 def reverse(string):
+    if type(string) != str:
+        return
     string = string[::-1].swapcase()
     print(string)
 

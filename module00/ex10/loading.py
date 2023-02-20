@@ -12,8 +12,7 @@ def ft_progress(lst: list):
             f'[{pourcent:3d}%]'
             f'[{("="*round(pourcent / 5) + ">"):21}] '
             f'{i}/{max_lst} | '
-            f'elapsed time ??s'
-            , end="\r"
+            f'elapsed time ??s', end="\r"
         )
         yield i
 

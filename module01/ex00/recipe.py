@@ -1,4 +1,5 @@
 class Recipe():
+    """A recipe"""
     __recipe_type_lst = ("starter", "lunch", "dessert")
 
     def __init__(
@@ -16,8 +17,6 @@ class Recipe():
         self.__check_ingredients(ingredients)
         self.__check_description(description)
         self.__check_recipe_type(recipe_type)
-
-# peut etre que je dois pas raise mais sys.exit() ??
 
     def __check_name(self, name):
         if type(name) != str:
@@ -62,5 +61,7 @@ class Recipe():
             raise ValueError(f'Available recipe types : {self.__recipe_type_lst}')
         self.recipe_type = recipe_type
 
-x = Recipe("lol", 2, 0, ["flop"], "empty", "starter")
-print(x.__dict__)
+    def __str__(self):
+        """Return the string to print with the recipe info"""
+        txt = f'{self.name}: {self.description}'
+        return txt

@@ -2,14 +2,14 @@ import sys
 import string
 
 
-def has_special_char(msg):
+def has_special_char(msg: str = ""):
     for c in msg:
         if c in string.punctuation:
             return True
     return False
 
 
-def morse_convert(msg: str) -> str:
+def morse_convert(msg: str = "") -> str:
     """Convert alphanumeric characters to morse code.
         Supported characters : [0-9] [a-Z] and space ' '
     """
@@ -52,6 +52,8 @@ def morse_convert(msg: str) -> str:
         "Z": "--..",
         " ": "/",
     }
+    if not isinstance(msg, str):
+        return "ERROR"
     if has_special_char(msg):
         return "ERROR"
     msg = msg.upper()

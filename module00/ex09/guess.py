@@ -2,7 +2,10 @@ import sys
 import random
 
 
-def guess(min, max):
+def guess(min: int = 0, max: int = 0):
+    if not isinstance(min, int) or not isinstance(max, int):
+        print("ERROR")
+        return
     if min > max:
         tmp = min
         min = max

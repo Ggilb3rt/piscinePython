@@ -7,6 +7,7 @@ python kata02.py | cat -e
 python kata02.py | wc -c
 echo "\n-kata03"
 python kata03.py | cat -e
+echo
 python kata03.py | wc -c
 echo "\n-kata04"
 python kata04.py | cat -e

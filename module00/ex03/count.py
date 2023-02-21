@@ -3,9 +3,9 @@ import string
 
 
 def text_analyzer(text: str = ""):
-    """Print the sums of upper-case, lower-case,
-    punctiation and space characters of a string
     """
+    This function counts the number of upper characters, lower characters,
+    punctuation and spaces in a given text."""
     if type(text) != str:
         print("AssertionError: argument is not a string")
         return
@@ -25,8 +25,11 @@ def text_analyzer(text: str = ""):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) > 2:
         print("Error: need only one string argument")
         sys.exit(0)
-    text_analyzer(sys.argv[1])
+    if len(sys.argv) == 1:
+        text_analyzer()
+    else:
+        text_analyzer(sys.argv[1])
     sys.exit(1)

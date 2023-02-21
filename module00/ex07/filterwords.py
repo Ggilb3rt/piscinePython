@@ -5,9 +5,7 @@ import string
 def check_args(arg1="", arg2=""):
     if not isinstance(arg1, str):
         raise TypeError('First arg must be a string')
-    try:
-        int(arg2)
-    except KeyError:
+    if not arg2.isdigit():
         raise TypeError('Second arg must be an integer')
 
 

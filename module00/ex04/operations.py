@@ -11,12 +11,12 @@ def operations(nb1: int = 0, nb2: int = 0):
         f'{"Sum:":{tab}}{nb1 + nb2}\n'
         f'{"Differences:":{tab}}{nb1 - nb2}\n'
         f'{"Product:":{tab}}{nb1 * nb2}'
-        )
+    )
 # '{0:15}{1}\n'.format('Product:', nb1 * nb2)
 # '{string:15}{product}\n'.format(string='Product:', product=nb1 * nb2)
     if nb2 == 0:
-        print(f'{"Quotient:":{tab}}"ERROR (division by zero)"')
-        print(f'{"Quotient:":{tab}}"ERROR (modulo by zero)"')
+        print(f'{"Quotient:":{tab}}ERROR (division by zero)')
+        print(f'{"Remainder:":{tab}}ERROR (modulo by zero)')
     else:
         quotient = nb1 / nb2
         print(f'{"Quotient:":{tab}}{round(quotient, 4)}'
@@ -33,7 +33,7 @@ def str_to_int(s: str) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 0:
+    if len(sys.argv) == 1:
         print(
             "Usage: python operation.py <number1> <number2>\n"
             "Exemple:\n"
@@ -42,4 +42,5 @@ if __name__ == "__main__":
         sys.exit(0)
     elif len(sys.argv) != 3:
         print("AssertionError: need 3 arguments")
+        sys.exit(0)
     operations(str_to_int(sys.argv[1]), str_to_int(sys.argv[2]))

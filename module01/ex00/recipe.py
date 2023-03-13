@@ -46,7 +46,7 @@ class Recipe():
             raise ValueError('Ingredients list can\'t be empty')
         for el in ingredients:
             if not isinstance(el, str):
-                raise ValueError('Each ingredients must be a string')
+                raise TypeError('Each ingredients must be a string')
         self.ingredients = ingredients
 
     def __check_description(self, description):
@@ -62,6 +62,9 @@ class Recipe():
                 f'Available recipe types : {self.__recipe_type_lst}'
             )
         self.recipe_type = recipe_type
+
+    # def __del__(self):
+    #     print("I can't be a Recipe in this world")
 
     def __str__(self):
         """Return the string to print with the recipe info"""

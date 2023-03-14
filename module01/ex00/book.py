@@ -4,18 +4,18 @@ from recipe import Recipe
 
 class Book():
     """A cookbook"""
-    creation_date = datetime.datetime.now()
-    last_update = datetime.datetime.now()
-    __recipes_list = {
-        "starter": [],
-        "lunch": [],
-        "dessert": [],
-    }
 
     def __init__(self, name: str):
         if not isinstance(name, str):
             raise TypeError('The name of a cookbook must be a string.')
         self.name = name
+        self.creation_date = datetime.datetime.now()
+        self.last_update = datetime.datetime.now()
+        self.__recipes_list = {
+            "starter": [],
+            "lunch": [],
+            "dessert": [],
+        }
 
     def get_recipe_by_name(self, name: str) -> Recipe:
         """Prints a recipe with the name \

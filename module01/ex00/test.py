@@ -73,13 +73,13 @@ class TestBook(unittest.TestCase):
     def test_Book_init_name(self):
         with self.assertRaises(TypeError):
             Book(42)
-        base = Book("42")
-        self.assertEqual(base.name, "42")
+        base = Book("42.0")
+        self.assertEqual(base.name, "42.0")
         self.assertEqual(base.creation_date.second, base.last_update.second)
 
     def test_Book_add_recipe(self):
-        toast = Recipe("Toast", 1, 2, ["bread", "butter"], "Good old classic toasted bread", "starter")
-        book = Book("42")
+        toast = Recipe("Toast1", 1, 2, ["bread", "butter"], "Good old classic toasted bread", "starter")
+        book = Book("42.1")
         bookNoUpdateDate = book.last_update
         with self.assertRaises(TypeError):
             book.add_recipe("string")
@@ -88,53 +88,61 @@ class TestBook(unittest.TestCase):
             book.add_recipe(toast)
         toast.recipe_type = 'starter'
         book.add_recipe(toast)
+        self.assertEqual(book._Book__recipes_list["starter"][0], book.get_recipe_by_name('Toast'))
         self.assertEqual(book._Book__recipes_list["starter"][0], toast)
-        self.assertEqual(book.get_recipe_by_name('Toast'), toast)
+        self.assertEqual(book.get_recipe_by_name('Toast1'), toast)
         self.assertGreater(book.last_update, bookNoUpdateDate)
 
     def test_Book_get_recipe_by_name(self):
-        toast = Recipe("Toast", 1, 2, ["bread", "butter"], "Good old classic toasted bread", "starter")
-        # toast2 = Recipe("Toast2", 1, 2, ["bread", "butter"], "Good old classic toasted bread", "starter")
+        pizza = Recipe("pizza", 2, 30, ["floor", "water", "many things"], "[racist italian accent]", "lunch")
         book = Book("42.2")
-        book.add_recipe(toast)
-        # book.add_recipe(toast2)
         with self.assertRaises(TypeError):
             book.get_recipe_by_name(123)
         with self.assertRaises(ValueError):
             book.get_recipe_by_name("123")
-        self.assertEqual(book._Book__recipes_list["starter"][0], toast)
-        self.assertEqual(book.get_recipe_by_name("Toast"), toast)
+        book.add_recipe(pizza)
+        self.assertEqual(book._Book__recipes_list["lunch"][0], book.get_recipe_by_name('pizza'))
+        self.assertEqual(book._Book__recipes_list["lunch"][0], pizza)
+        self.assertEqual(book.get_recipe_by_name('pizza'), pizza)
 
 
 
 if __name__ == '__main__':
+    # lol = Book("poet")
+    # french = Recipe("French toast", 1, 5, ["bread", "milk", "eggs", "sugar"], "le pain perdu", "starter")
+
+    # lol.add_recipe(french)
+    # print(french)
+    # for el in lol._Book__recipes_list.items():
+    #     print (el)
+
     unittest.main()
 
 
-try:
-    grandma = Book("Grandma's secret")
-    print(grandma.__doc__)
-    print(str(grandma))
+# try:
+#     grandma = Book("Grandma's secret")
+#     print(grandma.__doc__)
+#     print(str(grandma))
     
-    print()
-    time.sleep(0.2)
+#     print()
+#     time.sleep(0.2)
 
-    toast = Recipe("Toast", 1, 2, ["bread", "butter"], "Good old classic toasted bread", "starter")
-    print(toast.__doc__)
-    print(toast)
-    pizza = Recipe("Pizza", 2, 30, ["floor", "water", "many things"], "[racist italian accent]", "lunch")
+#     toast = Recipe("Toast", 1, 2, ["bread", "butter"], "Good old classic toasted bread", "starter")
+#     print(toast.__doc__)
+#     print(toast)
+#     pizza = Recipe("Pizza", 2, 30, ["floor", "water", "many things"], "[racist italian accent]", "lunch")
 
 
-    print("\nAdd recipe to book")
-    grandma.add_recipe(toast)
-    grandma.add_recipe(pizza)
-    grandma.add_recipe(Recipe("French toast", 1, 5, ["bread", "milk", "eggs", "sugar"], "le pain perdu", "starter"))
-    print(grandma)
-    print(grandma.get_recipes_by_types("starter"))
-    print(grandma.get_recipe_by_name("Toast"))
-except TypeError as te:
-    print(te)
-except ValueError as ve:
-    print(ve)
+#     print("\nAdd recipe to book")
+#     grandma.add_recipe(toast)
+#     grandma.add_recipe(pizza)
+#     grandma.add_recipe(Recipe("French toast", 1, 5, ["bread", "milk", "eggs", "sugar"], "le pain perdu", "starter"))
+#     print(grandma)
+#     print(grandma.get_recipes_by_types("starter"))
+#     print(grandma.get_recipe_by_name("Toast"))
+# except TypeError as te:
+#     print(te)
+# except ValueError as ve:
+#     print(ve)
 
-    grandma.get_recipe_by_name("POUET")
+#     grandma.get_recipe_by_name("POUET")

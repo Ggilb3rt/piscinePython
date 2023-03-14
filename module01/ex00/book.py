@@ -35,7 +35,9 @@ class Book():
             raise TypeError("Recipe type must be a string")
         if recipe_type not in self.__recipes_list:
             raise ValueError(f"Recipe types : {self.__recipes_list.keys()}")
-        names_list = [recipe.name for recipe in self.__recipes_list[recipe_type] if len(self.__recipes_list[recipe_type])]
+        names_list = [recipe.name
+                      for recipe in self.__recipes_list[recipe_type]
+                      if len(self.__recipes_list[recipe_type])]
         return names_list
         # print(f'{recipe_type}')
         # for recipes in self.__recipes_list[recipe_type]:
@@ -44,7 +46,7 @@ class Book():
         #     else:
         #         print(f'\t{recipes.name}')
 
-    def add_recipe(self, recipe):
+    def add_recipe(self, recipe: Recipe):
         """Add a recipe to the book and update last_update"""
         if not isinstance(recipe, Recipe):
             raise TypeError("add_recipe must be Recipe instance")
@@ -52,7 +54,9 @@ class Book():
             raise ValueError("how can you do that you strange wizard ?")
         self.__recipes_list[recipe.recipe_type].append(recipe)
         self.last_update = datetime.datetime.now()
-        print(f'{recipe.name} added to the cookbook {self.name}')
+        # print(f'{recipe.name} added to the cookbook {self.name}')
 
     def __str__(self):
-        return f'"{self.name}" created at {self.creation_date}, last update {self.last_update}'
+        return (
+            f'"{self.name}" created at {self.creation_date}, '
+            f'last update {self.last_update}')

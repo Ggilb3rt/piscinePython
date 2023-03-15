@@ -68,8 +68,18 @@ class TestRecipe(unittest.TestCase):
         # with self.assertRaises(ValueError):
         #     base.recipe_type = 'nope'
 
+    def test_Recipe_str(self):
+        french = Recipe("French toast", 1, 5,
+                        ["bread", "milk", "eggs", "sugar"],
+                        "le pain perdu", "starter")
+        self.assertEqual(str(french), f'{french.name}: {french.description}')
+
 
 class TestBook(unittest.TestCase):
+    def test_Book_init(self):
+        with self.assertRaises(TypeError):
+            Book()
+
     def test_Book_init_name(self):
         with self.assertRaises(TypeError):
             Book(42)

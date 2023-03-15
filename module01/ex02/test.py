@@ -84,13 +84,78 @@ class TestVector(unittest.TestCase):
             vect = Vector([[0.0]]) + Vector([[0.0], [0.0]])
         vect1 = Vector([[0.0], [1.0], [2.0], [3.0]])
         vect2 = Vector([[3.0], [2.0], [1.0], [0.0]])
-        self.assertEqual(vect1 + vect2, [[3.0], [3.0], [3.0], [3.0]])
+        vect = vect1 + vect2
+        self.assertEqual(vect.values,
+                         Vector([[3.0], [3.0], [3.0], [3.0]]).values)
         vect1 = Vector([[0.0, 1.0, 2.0, 3.0]])
         vect2 = Vector([[0.0, 1.0, 2.0, 3.0]])
-        self.assertEqual(vect1 + vect2, [[0.0, 2.0, 4.0, 6.0]])
+        vect = vect1 + vect2
+        self.assertEqual(vect.values,
+                         Vector([[0.0, 2.0, 4.0, 6.0]]).values)
         vect1 = Vector([[-9.0]])
         vect2 = Vector([[18.0]])
-        self.assertEqual(vect1 + vect2, [[9.0]])
+        vect = vect1 + vect2
+        self.assertEqual(vect.values, Vector([[9.0]]).values)
+
+    def test_sub(self):
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) - 5
+        with self.assertRaises(TypeError):
+            vect = 5.0 - Vector([[0.0]])
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) - "sd"
+        with self.assertRaises(ValueError):
+            vect = Vector([[0.0]]) - Vector([[0.0], [0.0]])
+        vect1 = Vector([[0.0], [1.0], [2.0], [3.0]])
+        vect2 = Vector([[3.0], [2.0], [1.0], [0.0]])
+        vect = vect1 - vect2
+        self.assertEqual(vect.values,
+                         Vector([[-3.0], [-1.0], [1.0], [3.0]]).values)
+        vect1 = Vector([[0.0, 1.0, 2.0, 3.0]])
+        vect2 = Vector([[0.0, 1.0, 2.0, 3.0]])
+        vect = vect1 - vect2
+        self.assertEqual(vect.values,
+                         Vector([[0.0, 0.0, 0.0, 0.0]]).values)
+        vect1 = Vector([[-9.0]])
+        vect2 = Vector([[18.0]])
+        vect = vect1 - vect2
+        self.assertEqual(vect.values, Vector([[-27.0]]).values)
+        vect = vect2 - vect1
+        self.assertEqual(vect.values, Vector([[27.0]]).values)
+
+    def test_divide(self):
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) / Vector([1.0])
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) / "sd"
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) / 5
+        with self.assertRaises(ZeroDivisionError):
+            vect = Vector([[5.0]]) / 0.0
+        vect1 = Vector([[6.0], [2.0], [12.0]])
+        vect = vect1 / 2.0
+        self.assertEqual(vect.values, Vector([[3.0], [1.0], [6.0]]).values)
+        vect1 = Vector([[6.0, 2.0, 12.0]])
+        vect = vect1 / 2.0
+        self.assertEqual(vect.values, Vector([[3.0, 1.0, 6.0]]).values)
+        with self.assertRaises(NotImplementedError):
+            vect = 2.0 / vect1
+
+    def test_mul(self):
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) * Vector([1.0])
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) * "sd"
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]) * 5
+        vect1 = Vector([[6.0], [2.0], [12.0]])
+        vect = vect1 * 2.0
+        self.assertEqual(vect.values, Vector([[12.0], [4.0], [24.0]]).values)
+        vect1 = Vector([[6.0, 2.0, 12.0]])
+        vect = vect1 * 2.0
+        self.assertEqual(vect.values, Vector([[12.0, 4.0, 24.0]]).values)
+        vect = 2.0 * vect1
+        self.assertEqual(vect.values, Vector([[12.0, 4.0, 24.0]]).values)
 
 
 if __name__ == '__main__':

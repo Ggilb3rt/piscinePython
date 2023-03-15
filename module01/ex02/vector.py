@@ -61,18 +61,29 @@ class Vector():
         else:
             raise TypeError(self.__init__.__doc__)
 
+    def __isRow(self):
+        return True if self.shape[0] == 1 else False
+
     def dot(self, vector):
-        """Produce a dot product between two vectors of same shape"""
-        # check if vector isinstance of Vector
-        # check if same shape ==> don't care all must be row
+        """Produce a dot product between two vectors of same shape
+            Vector([[1.0, 3.0]]).dot(Vector([[8.0, 2.0]]))
+        """
         # https://en.wikipedia.org/wiki/Dot_product
+        if not isinstance(vector, Vector):
+            raise TypeError(self.dot.__doc__)
+        if self.shape != vector.shape:
+            raise ValueError(self.dot.__doc__)
+        if self.__isRow():
+            return sum(self.values[0][i] * vector.values[0][i] for i in range(self.shape[1]))
+        else:
+            return sum(self.values[i][0] * vector.values[i][0] for i in range(self.shape[0]))
 
     def T(self):
         """Returns the transpose vector
         (i.e. a column vector into a row vector,
         or a row vector into a column vector).
         """
-        if self.shape[0] == 1:
+        if self.__isRow():
             # row change to column ie change [[1,2,3]] -> [[1],[2],[3]]
             return Vector([[x] for x in self.values[0]])
         else:
@@ -84,7 +95,7 @@ class Vector():
             raise TypeError("Addition only with Vector of same shape")
         if self.shape != other.shape:
             raise ValueError("Addition only with Vector of same shape")
-        if self.shape[0] == 1:
+        if self.__isRow():
             # [[1,2,3]]
             return Vector([[self.values[0][i] + other.values[0][i]
                             for i in range(self.shape[1])]])
@@ -101,7 +112,7 @@ class Vector():
             raise TypeError("Substraction only with Vector of same shape")
         if self.shape != other.shape:
             raise ValueError("Substraction only with Vector of same shape")
-        if self.shape[0] == 1:
+        if self.__isRow():
             # [[1,2,3]]
             return Vector([[self.values[0][i] - other.values[0][i]
                             for i in range(self.shape[1])]])
@@ -116,7 +127,7 @@ class Vector():
     def __truediv__(self, other):
         if not isinstance(other, float):
             raise TypeError("Divide only with scalars")
-        if self.shape[0] == 1:
+        if self.__isRow():
             # [[1,2,3]]
             return Vector([[self.values[0][i] / other
                             for i in range(self.shape[1])]])
@@ -133,7 +144,7 @@ class Vector():
     def __mul__(self, other):
         if not isinstance(other, float):
             raise TypeError("Multiplication only with scalars")
-        if self.shape[0] == 1:
+        if self.__isRow():
             # [[1,2,3]]
             return Vector([[self.values[0][i] * other
                             for i in range(self.shape[1])]])
@@ -144,3 +155,9 @@ class Vector():
 
     def __rmul__(self, other):
         return self.__mul__(other)
+
+    def __str__(self):
+        return str(self.values)
+    
+    def __repr__(self):
+        return f'{self.values}'

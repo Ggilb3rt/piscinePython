@@ -157,6 +157,28 @@ class TestVector(unittest.TestCase):
         vect = 2.0 * vect1
         self.assertEqual(vect.values, Vector([[12.0, 4.0, 24.0]]).values)
 
+    def test_dot(self):
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]).dot(5)
+        with self.assertRaises(TypeError):
+            vect = Vector([[0.0]]).dot("sd")
+        with self.assertRaises(ValueError):
+            vect = Vector([[0.0]]).dot(Vector([[0.0], [0.0]]))
+        with self.assertRaises(ValueError):
+            vect = Vector([[0.0, 1.0]]).dot(Vector([[0.0]]))
+        with self.assertRaises(ValueError):
+            vect = Vector([[0.0], [1.0]]).dot(Vector([[0.0]]))
+        v1 = Vector([[0.0], [1.0], [2.0], [3.0]])
+        v2 = Vector([[2.0], [1.5], [2.25], [4.0]])
+        self.assertEqual(v1.dot(v2), 18.0)
+        v3 = Vector([[1.0, 3.0]])
+        v4 = Vector([[2.0, 4.0]])
+        self.assertEqual(v3.dot(v4), 14.0)
+
+    def test_str_repr(self):
+        v1 = Vector([[0.0], [1.0], [2.0], [3.0]])
+        self.assertEqual(str(v1), "[[0.0], [1.0], [2.0], [3.0]]")
+        self.assertEqual(repr(v1), "[[0.0], [1.0], [2.0], [3.0]]")
 
 if __name__ == '__main__':
     unittest.main()

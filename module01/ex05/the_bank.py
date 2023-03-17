@@ -1,5 +1,6 @@
 import unittest
 
+
 class Account(object):
     ID_COUNT = 1
 
@@ -32,7 +33,7 @@ class Bank(object):
             • no attribute starting with
                 zip,
                 addr
-            • no attribute 
+            • no attribute
                 name,
                 id,
                 value
@@ -53,8 +54,7 @@ class Bank(object):
             not isinstance(account.name, str) or
             not isinstance(account.id, int) or
             ((not isinstance(account.value, int) and
-                 not isinstance(account.value, float)))
-            ):
+                not isinstance(account.value, float)))):
             return True
         return False
 
@@ -69,7 +69,8 @@ class Bank(object):
         # if self.__isCorrupted(new_account):
         #     return False
             # raise ValueError("The account is corrupted")
-        if any(in_account.name == new_account.name for in_account in self.accounts):
+        if any(in_account.name == new_account.name
+               for in_account in self.accounts):
             return False
             # raise ValueError("One account has same name")
         self.accounts.append(new_account)
@@ -83,13 +84,14 @@ class Bank(object):
         @return True if success, False if an error occured
         """
         if (not isinstance(origin, str) or
-            not isinstance(dest, str) or
-            not isinstance(amount, float) or
-            amount < 0
-            ):
+                not isinstance(dest, str) or
+                not isinstance(amount, float) or
+                amount < 0):
             return False
-        valid_or = [in_account for in_account in self.accounts if in_account.name == origin]
-        valid_dest = [in_account for in_account in self.accounts if in_account.name == dest]
+        valid_or = [in_account for in_account in self.accounts
+                    if in_account.name == origin]
+        valid_dest = [in_account for in_account in self.accounts
+                      if in_account.name == dest]
         if len(valid_dest) != 1 or len(valid_or) != 1:
             return False
         valid_dest = valid_dest[0]
@@ -109,7 +111,8 @@ class Bank(object):
         """
         if not isinstance(name, str):
             return False
-        account = [in_account for in_account in self.accounts if in_account.name == name]
+        account = [in_account for in_account in self.accounts
+                   if in_account.name == name]
         if len(account) != 1:
             return False
         account = account[0]
@@ -139,7 +142,8 @@ class Bank(object):
         if not hasattr(account, "value"):
             account.value = 0.0
         else:
-            if not isinstance(account.value, int) and not isinstance(account.value, float):
+            if (not isinstance(account.value, int) and
+                    not isinstance(account.value, float)):
                 account.value = 0.0
         # fix even number of attributes with dummy attr
         if len(dir(account)) % 2 == 0:
@@ -147,93 +151,91 @@ class Bank(object):
         return True
 
 
-
-
 class TestBank(unittest.TestCase):
     def test___isCorrupted(self):
         b = Bank()
         valid = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                        zip='NW1 6XE',
+                        addr='221B Baker street',
+                        value=25000.0,)
         self.assertEqual(b._Bank__isCorrupted(valid), False)
         even = Account('James Watson',
-            lol='ert',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                       lol='ert',
+                       zip='NW1 6XE',
+                       addr='221B Baker street',
+                       value=25000.0,)
         self.assertEqual(b._Bank__isCorrupted(even), True)
         has_b = Account('James Watson',
-            bab='ert',
-            lol='ert',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                        bab='ert',
+                        lol='ert',
+                        zip='NW1 6XE',
+                        addr='221B Baker street',
+                        value=25000.0,)
         self.assertEqual(b._Bank__isCorrupted(has_b), True)
         no_zip = Account('James Watson',
-            pip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                         pip='NW1 6XE',
+                         addr='221B Baker street',
+                         value=25000.0,)
         self.assertEqual(b._Bank__isCorrupted(no_zip), True)
         no_addr = Account('James Watson',
-            zip='NW1 6XE',
-            lddr='221B Baker street',
-            value=25000.0,)
+                          zip='NW1 6XE',
+                          lddr='221B Baker street',
+                          value=25000.0,)
         self.assertEqual(b._Bank__isCorrupted(no_addr), True)
         no_name = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,
-            replace_name='name2')
+                          zip='NW1 6XE',
+                          addr='221B Baker street',
+                          value=25000.0,
+                          replace_name='name2')
         del no_name.name
         self.assertEqual(b._Bank__isCorrupted(no_name), True)
         no_id = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,
-            replace_id=23)
+                        zip='NW1 6XE',
+                        addr='221B Baker street',
+                        value=25000.0,
+                        replace_id=23)
         del no_id.id
         self.assertEqual(b._Bank__isCorrupted(no_id), True)
         no_value = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            not_value=25000.0,)
+                           zip='NW1 6XE',
+                           addr='221B Baker street',
+                           not_value=25000.0,)
         del no_value.value
         self.assertEqual(b._Bank__isCorrupted(no_value), True)
         name_not_str = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                               zip='NW1 6XE',
+                               addr='221B Baker street',
+                               value=25000.0,)
         name_not_str.name = 1
         self.assertEqual(b._Bank__isCorrupted(name_not_str), True)
         id_not_int = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                             zip='NW1 6XE',
+                             addr='221B Baker street',
+                             value=25000.0,)
         id_not_int.id = "coucou"
         self.assertEqual(b._Bank__isCorrupted(id_not_int), True)
         value_not_int_float = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000.0,)
+                                      zip='NW1 6XE',
+                                      addr='221B Baker street',
+                                      value=25000.0,)
         value_not_int_float.value = "coucou"
         self.assertEqual(b._Bank__isCorrupted(value_not_int_float), True)
         value_is_int = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                               zip='NW1 6XE',
+                               addr='221B Baker street',
+                               value=25000,)
         self.assertEqual(b._Bank__isCorrupted(value_is_int), False)
 
     def test_Bank_add(self):
         b = Bank()
         a1 = Account('James Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                     zip='NW1 6XE',
+                     addr='221B Baker street',
+                     value=25000,)
         a2 = Account('James Web',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                     zip='NW1 6XE',
+                     addr='221B Baker street',
+                     value=25000,)
         self.assertEqual(b.add(a1), True)
         self.assertEqual(b.add(a2), True)
         self.assertEqual(b.add(a2), False)
@@ -242,13 +244,13 @@ class TestBank(unittest.TestCase):
     def test_Bank_transfer(self):
         b = Bank()
         a1 = Account('Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                     zip='NW1 6XE',
+                     addr='221B Baker street',
+                     value=25000,)
         a2 = Account('Web',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                     zip='NW1 6XE',
+                     addr='221B Baker street',
+                     value=25000,)
         b.add(a1)
         b.add(a2)
         self.assertEqual(b.transfer(a1.name, a2.name, 20.0), True)
@@ -279,13 +281,13 @@ class TestBank(unittest.TestCase):
     def test_Bank_fix_account(self):
         b = Bank()
         a1 = Account('Watson',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                     zip='NW1 6XE',
+                     addr='221B Baker street',
+                     value=25000,)
         a2 = Account('Web',
-            zip='NW1 6XE',
-            addr='221B Baker street',
-            value=25000,)
+                     zip='NW1 6XE',
+                     addr='221B Baker street',
+                     value=25000,)
         to_fix = Account("Bad")
         b.add(a1)
         b.add(a2)
@@ -311,13 +313,8 @@ class TestBank(unittest.TestCase):
         self.assertEqual(Account("useless").id, 7)
         b.accounts[0].add_dummy_to_be_even = True
         self.assertEqual(b.fix_account(a1.name), True)
-        self.assertEqual(hasattr(b.accounts[0], "dont_like_even_nb_of_attr"), True)
-
-
-
-
-
-
+        self.assertEqual(hasattr(b.accounts[0],
+                                 "dont_like_even_nb_of_attr"), True)
 
 
 if __name__ == "__main__":

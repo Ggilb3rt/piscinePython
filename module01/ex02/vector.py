@@ -74,9 +74,11 @@ class Vector():
         if self.shape != vector.shape:
             raise ValueError(self.dot.__doc__)
         if self.__isRow():
-            return sum(self.values[0][i] * vector.values[0][i] for i in range(self.shape[1]))
+            return sum(self.values[0][i] * vector.values[0][i]
+                       for i in range(self.shape[1]))
         else:
-            return sum(self.values[i][0] * vector.values[i][0] for i in range(self.shape[0]))
+            return sum(self.values[i][0] * vector.values[i][0]
+                       for i in range(self.shape[0]))
 
     def T(self):
         """Returns the transpose vector
@@ -158,6 +160,6 @@ class Vector():
 
     def __str__(self):
         return str(self.values)
-    
+
     def __repr__(self):
         return f'{self.values}'

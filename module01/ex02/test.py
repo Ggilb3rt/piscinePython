@@ -180,5 +180,6 @@ class TestVector(unittest.TestCase):
         self.assertEqual(str(v1), "[[0.0], [1.0], [2.0], [3.0]]")
         self.assertEqual(repr(v1), "[[0.0], [1.0], [2.0], [3.0]]")
 
+
 if __name__ == '__main__':
     unittest.main()

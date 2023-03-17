@@ -43,8 +43,6 @@ class Bank(object):
                 float
         """
         attrs = dir(account)
-        # print(len(attrs))
-        # print(attrs)
         if (len(attrs) % 2 == 0 or
             any(el[0] == 'b' for el in attrs) or
             not any(el.startswith("zip") for el in attrs) or
@@ -68,8 +66,8 @@ class Bank(object):
         if not isinstance(new_account, Account):
             return False
             # raise TypeError(self.add.__doc__)
-        if self.__isCorrupted(new_account):
-            return False
+        # if self.__isCorrupted(new_account):
+        #     return False
             # raise ValueError("The account is corrupted")
         if any(in_account.name == new_account.name for in_account in self.accounts):
             return False
@@ -87,22 +85,68 @@ class Bank(object):
         if (not isinstance(origin, str) or
             not isinstance(dest, str) or
             not isinstance(amount, float) or
-            amount < 0 or
-            in_account.value < amount for in_account in self.accounts if in_account.name == origin
+            amount < 0
             ):
             return False
-        # j'aimerai mettre ca (lignes 91) dans la condition mais c'est quand meme sale (et pas sur que ca marche),
-        # il vaut mieux trouver origin et dest dans self.accounts puis tester si ils existent et sont valides
-        # mais en dessous je pense pas que ca marche, il faudrait que je pass une ref
-        valid_or = [in_account.reference for in_account in self.accounts if in_account.name == origin]
-        valid_dest = [in_account.reference for in_account in self.accounts if in_account.name == dest]
+        valid_or = [in_account for in_account in self.accounts if in_account.name == origin]
+        valid_dest = [in_account for in_account in self.accounts if in_account.name == dest]
+        if len(valid_dest) != 1 or len(valid_or) != 1:
+            return False
+        valid_dest = valid_dest[0]
+        valid_or = valid_or[0]
+        if valid_or.value < amount:
+            return False
+        if self.__isCorrupted(valid_or) or self.__isCorrupted(valid_dest):
+            return False
+        valid_or.value = valid_or.value - amount
+        valid_dest.value = valid_dest.value + amount
+        return True
 
-    def fix_account(self, name):
+    def fix_account(self, name: str) -> bool:
         """ fix account associated to name if corrupted
         @name: str(name) of the account
         @return True if success, False if an error occured
         """
-        # ... Your code ...
+        if not isinstance(name, str):
+            return False
+        account = [in_account for in_account in self.accounts if in_account.name == name]
+        if len(account) != 1:
+            return False
+        account = account[0]
+        if not self.__isCorrupted(account):
+            return False
+        attrs = dir(account)
+        # remove attrs starting with b
+        for el in filter(lambda el: el.startswith('b'), attrs):
+            delattr(account, el)
+        # no attr starting with zip or addr
+        finder = list(filter(lambda el: el.startswith('zip'), attrs))
+        if len(finder) == 0:
+            account.zip = "0000"
+        finder = list(filter(lambda el: el.startswith('addr'), attrs))
+        if len(finder) == 0:
+            account.addr = "0000"
+        # no attr id and not int
+        if not hasattr(account, "id"):
+            setattr(account, "id", Account.ID_COUNT)
+            Account.ID_COUNT += 1
+        else:
+            if not isinstance(account.id, int):
+                account.id = Account.ID_COUNT
+                Account.ID_COUNT += 1
+        # if name is corrupted the method return before
+        # no attr value and not int or float
+        if not hasattr(account, "value"):
+            account.value = 0.0
+        else:
+            if not isinstance(account.value, int) and not isinstance(account.value, float):
+                account.value = 0.0
+        # fix even number of attributes with dummy attr
+        if len(dir(account)) % 2 == 0:
+            account.dont_like_even_nb_of_attr = True
+        return True
+
+
 
 
 class TestBank(unittest.TestCase):
@@ -195,8 +239,86 @@ class TestBank(unittest.TestCase):
         self.assertEqual(b.add(a2), False)
         self.assertEqual(b.add(a1), False)
 
+    def test_Bank_transfer(self):
+        b = Bank()
+        a1 = Account('Watson',
+            zip='NW1 6XE',
+            addr='221B Baker street',
+            value=25000,)
+        a2 = Account('Web',
+            zip='NW1 6XE',
+            addr='221B Baker street',
+            value=25000,)
+        b.add(a1)
+        b.add(a2)
+        self.assertEqual(b.transfer(a1.name, a2.name, 20.0), True)
+        self.assertEqual(b.accounts[0].value, 24980.0)
+        self.assertEqual(b.accounts[1].value, 25020.0)
+        b.accounts[0].value = 0
+        self.assertEqual(b.transfer(a1.name, a2.name, 20.0), False)
+        b.accounts[0].value = 100
+        self.assertEqual(b.transfer(a1.name, a2.name, 200.0), False)
+        self.assertEqual(b.transfer(a1.name, "Bob", 20.0), False)
+        self.assertEqual(b.transfer("Roger", a2.name, 20.0), False)
+        self.assertEqual(b.transfer(a1.name, 1, 20.0), False)
+        self.assertEqual(b.transfer(1, a2.name, 20.0), False)
+        self.assertEqual(b.transfer(a1.name, a2.name, 2), False)
+        self.assertEqual(b.transfer(a1.name, a2.name, "20.0"), False)
+        self.assertEqual(b.transfer(a1.name, a2.name, -20.0), False)
+        b.accounts[0].brioche = True
+        self.assertEqual(b.transfer(a1.name, a2.name, 20.0), False)
+        self.assertEqual(b.transfer(a2.name, a1.name, 20.0), False)
+        delattr(b.accounts[0], "brioche")
+        self.assertEqual(b.transfer(a2.name, a1.name, 100.0), True)
+        self.assertEqual(b.accounts[0].value, 200.0)
+        self.assertEqual(b.accounts[1].value, 24920.0)
+        self.assertEqual(b.transfer(a1.name, a1.name, 100.0), True)
+        self.assertEqual(b.accounts[0].value, 200.0)
+        self.assertEqual(b.accounts[1].value, 24920.0)
+
+    def test_Bank_fix_account(self):
+        b = Bank()
+        a1 = Account('Watson',
+            zip='NW1 6XE',
+            addr='221B Baker street',
+            value=25000,)
+        a2 = Account('Web',
+            zip='NW1 6XE',
+            addr='221B Baker street',
+            value=25000,)
+        to_fix = Account("Bad")
+        b.add(a1)
+        b.add(a2)
+        b.add(to_fix)
+        self.assertEqual(b.fix_account(42), False)
+        self.assertEqual(b.fix_account(a1.name), False)
+        b.accounts[0].brioche = True
+        self.assertEqual(b.fix_account(a1.name), True)
+
+        self.assertEqual(b.fix_account(a1.name), False)
+        self.assertEqual(b.accounts[0].value, 25000)
+        delattr(b.accounts[0], "value")
+        self.assertEqual(hasattr(b.accounts[0], "value"), False)
+        self.assertEqual(b.fix_account(a1.name), True)
+        self.assertEqual(b.accounts[0].value, 0.0)
+        self.assertEqual(b.accounts[2].name, "Bad")
+        self.assertEqual(hasattr(b.accounts[2], "id"), True)
+        delattr(b.accounts[2], "id")
+        self.assertEqual(hasattr(b.accounts[2], "id"), False)
+        self.assertEqual(b.fix_account(to_fix.name), True)
+        self.assertEqual(b.accounts[2].value, 0.0)
+        self.assertEqual(b.accounts[2].id, 6)
+        self.assertEqual(Account("useless").id, 7)
+        b.accounts[0].add_dummy_to_be_even = True
+        self.assertEqual(b.fix_account(a1.name), True)
+        self.assertEqual(hasattr(b.accounts[0], "dont_like_even_nb_of_attr"), True)
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
     unittest.main()
-
